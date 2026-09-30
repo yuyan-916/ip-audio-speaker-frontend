@@ -195,7 +195,7 @@ async function copyText(text) {
 </script>
 
 <template>
-  <div class="groups">
+  <div class="groups app-page">
     <el-card class="groups__card" shadow="never">
       <template #header>
         <div class="groups__header">

@@ -73,6 +73,17 @@ export function describeGroupCreater(creater) {
 }
 
 /**
+ * 这个分组是不是「分控软件的私有分组」。
+ * 判据（手册 P19 的数据有效性限定）：`Creater` 既不是空（管理软件创建），也不在 `00000001`~`00000008`
+ * （本后端 / API 用户创建）—— 那就只能是某个分控软件自己建的分组，手册建议**不要**把它写进其它设备的权限数据。
+ * @param {object} group 分组对象（NAS 原始字段，看 Creater）
+ * @returns {boolean}
+ */
+export function isPrivateGroup(group) {
+  return describeGroupCreater(group && group.Creater).tag === 'warning'
+}
+
+/**
  * 在设备列表里找出分组成员对应的设备（成员选择与名称显示共用）。
  * @param {string} memberId 分组成员里的设备 ID
  * @param {Array} devices 播放终端列表（NAS 原始字段）

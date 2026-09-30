@@ -369,7 +369,7 @@ function copyTaskRef(row) {
 </script>
 
 <template>
-  <div class="tasks">
+  <div class="tasks app-page">
     <!-- 上半：正在运行的任务（默认每 5 秒轮询） -->
     <el-card class="tasks__card" shadow="never">
       <template #header>

@@ -7,11 +7,14 @@
 // 于是把这一层收敛到这里：store / 页面只需 `assertNasOk(res, '码表名', '动作名')`。
 //
 // Result 码表来源：后端 docs/impl-notes.md §十二（NAS 手册 P9-14 的响应约定）与 §十四 2 / 3
-// （媒体文件、播放列表），以及 §四 / §五（定时任务、定时程序），逐条抄录；手册更新时同步改这里即可。
+// （媒体文件、播放列表），以及 §四 / §五（定时任务、定时程序）、§七（任务优先级），逐条抄录；
+// 手册更新时同步改这里即可。
 // ⚠️ 例外（手册没给独立码表的接口）：终端分组；媒体文件 / 播放列表的**列表**接口；
 //    任务模块的**列表**（taskList）与设备任务查询（taskWithDevice）；定时任务模块的**两个查询接口**
-//    （timingTaskList / timingProgramInfo）——都没有码表，一律走 COMMON_RESULT_MESSAGES 兜底
-//    （见 RESULT_TABLES 内的说明）。
+//    （timingTaskList / timingProgramInfo）；任务优先级的**查询**接口（priorityInfo）；
+//    设备权限的**两个查询接口**（permitCatalog / permitInfo）；设备任务的**两个查询接口**
+//    （deviceTaskCatalogList / deviceTaskList）
+//    —— 都没有码表，一律走 COMMON_RESULT_MESSAGES 兜底（见 RESULT_TABLES 内的说明）。
 
 /** 各接口共有的 Result 码（2/3/4/5/8 的语义每个接口都不同，所以只列真正通用的几个） */
 const COMMON_RESULT_MESSAGES = {
@@ -147,6 +150,74 @@ export const RESULT_TABLES = {
   //    GET /api/timing/tasks/{programIndex}（TimingTaskList）与 GET /api/timing/program（TimingProgramInfo）
   //    —— 手册这两节只给出字段，没有列 Result 码。
   //    调用时传的 tableName 是 'timingTaskList' / 'timingProgramInfo'，未收录 → 走通用码兜底。
+
+  // POST /api/priority → SetTaskPriorityAck
+  // （来源：NAS 手册 P82-84，见后端 docs/impl-notes.md §七 2，逐条抄录；
+  //   1=DataType 不符、6=无法识别字段 用通用码）
+  priority: {
+    2: '参数超出范围（taskClass 只能是 1~13、tcPriority 只能是 1~16）',
+    3: '请求缺少任务类（TaskClass）',
+    4: '请求缺少主优先级（TCPriority）',
+    5: '请求缺少处理规则（TCRule）',
+    7: 'NAS 执行失败（其他错误）',
+    8: 'NAS 拒绝设置'
+  },
+
+  // ⚠️ 任务优先级的**查询**接口（GET /api/priority → TaskPriorityInfo）也**故意没有留空表**：
+  //    手册那两页只给了设置应答（SetTaskPriorityAck）的码表，查询那一节只列字段。
+  //    调用时传的 tableName 是 'priorityInfo'，未收录 → 走通用码兜底。
+  //    （⚠️ 不要拿上面的 'priority' 去解释查询的 Result —— 两张表的编号语义不同：查询没有
+  //     “缺 TaskClass / 缺 TCPriority” 这类说法。）
+
+  // POST /api/device-permits → DevicePermitSetAck
+  // （来源：NAS 手册 P16-18，见后端 docs/impl-notes.md §九 3，逐条抄录；
+  //   1=DataType 不符、6=无法识别字段 用通用码）
+  // ⚠️ 手册的编号从 3 直接跳到 5（没有 4），别自作主张补一个「缺 XX」。
+  devicePermit: {
+    2: '权限清单里含非法 ID（出现设备自身、分组 ID 不是 FFFFFFxx 形式，或设备 ID 是 FFFFFFxx / 00000000）',
+    3: '请求缺少设备 ID',
+    5: '该设备不需要权限数据',
+    8: 'NAS 拒绝设置（设备不存在）'
+  },
+
+  // ⚠️ 设备权限的两个**查询**接口也**故意没有留空表**：
+  //    GET /api/device-permits/catalog（DevicePermitCatalog）与 GET /api/device-permits/{deviceId}
+  //    （DevicePermitInfo）—— 手册只列字段、没有列 Result 码。其中 `DevicePermitInfo` 的
+  //    **Result=1 是业务语义**（该设备尚未设置权限数据，不是错误），store 里已单独放行、不查表。
+  //    调用时传的 tableName 是 'permitCatalog' / 'permitInfo'，未收录 → 走通用码兜底。
+
+  // POST /api/device-tasks → DeviceTaskSetAck
+  // （来源：NAS 手册 P74-80 的「设定设备任务」应答表，见后端 docs/impl-notes.md §六 4，逐条抄录；
+  //   1=DataType 不符、6=无法识别字段 用通用码）
+  // ⚠️ 这张表是**逐条抄手册**的：3 / 4 / 5 三条把「缺字段」与「取值不符」写在了一起，
+  //    所以提示文案里把两种可能都列出来（例如 Result=4 既可能是文件任务缺 FileList，
+  //    也可能是采播 / 对讲任务的 CapturerID 与设备不符）。
+  deviceTaskSet: {
+    2: '请求缺少 DeviceID / TaskIndex / Disable（或取值不对：TaskIndex 需 1~128、Disable 需 0 或 1）',
+    3: '任务类型不支持（该设备类型不支持所选任务类型），或结束时间参数缺失',
+    4: '播放内容字段缺失或内容不符（文件任务缺 FileList、文字语音任务缺 VoiceText、采播 / 对讲任务的 CapturerID 与设备不符）',
+    5: '播放目标字段缺失，或对讲任务配置错误（PlayerList 的第一个必须是被叫方）',
+    8: '该设备不在设备任务目录中（配置任务前必须先把设备加入目录）'
+  },
+
+  // POST /api/device-tasks/catalog → DeviceTaskConfigAddAck / DeviceTaskConfigDelAck
+  // （来源：NAS 手册 P69-70，见后端 docs/impl-notes.md §六 2，逐条抄录；
+  //   1=DataType 不符、6=无法识别字段 用通用码）
+  // ⚠️ 两个动作共用一张表：4 只在 ADD 时出现、5 只在 REMOVE 时出现。
+  deviceTaskCatalog: {
+    2: '请求缺少 DeviceID 或取值错误（需为 8 位十六进制）',
+    3: '该设备类型不需要配置设备任务（手册 P79 的类型表里没有它的类型）',
+    4: '该设备已经在目录中（重复添加）',
+    5: '该设备不在目录中（移出失败）',
+    8: 'NAS 拒绝操作（设备 ID 不存在）'
+  },
+
+  // ⚠️ 设备任务的两个**查询**接口同样**故意没有留空表**：
+  //    GET /api/device-tasks/catalog（DeviceTaskCatalog）与 GET /api/device-tasks/{deviceId}
+  //    （DeviceTaskList）—— 手册只列字段、没有列 Result 码。其中 `DeviceTaskList` 的
+  //    **Result=1 是业务语义**（该设备没有配置设备任务，响应里连 Data 都没有），
+  //    store 里已单独放行、不查表。调用时传的 tableName 是 'deviceTaskCatalogList' /
+  //    'deviceTaskList'，未收录 → 走通用码兜底。
 
   // ⚠️ 终端分组（POST /api/groups/new|edit|delete → PlayerGroupNewAck / PlayerGroupSetAck）
   //    这里**故意没有留空表**：手册的分组章节（P19-23）只写明三个操作的必填字段，

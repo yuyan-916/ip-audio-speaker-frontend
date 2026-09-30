@@ -220,7 +220,7 @@ async function handleDummyConfirm(payload) {
 }
 </script>
 <template>
-  <div class="devices">
+  <div class="devices app-page">
     <el-card class="devices__card" shadow="never">
       <template #header>
         <div class="devices__header">

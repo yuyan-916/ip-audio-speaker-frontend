@@ -1,0 +1,165 @@
+/* ============================================================================
+ * src/styles/theme.css —— 设计 token（配色 / 尺寸）+ Element Plus 主题变量覆盖
+ *
+ * 风格：商务专业（参考阿里云控制台）。所有颜色 / 间距都只在这里定义一次，
+ * 页面与组件里一律用 var(--app-xxx) 引用，不要再写死十六进制色值。
+ *
+ * 为什么是「CSS 变量」而不是 SCSS 变量：
+ *   1) Element Plus 整套样式都建立在 --el-* 变量上（运行时生效），在 :root 覆盖一次就能
+ *      全球换肤；SCSS 变量编译期就没了，覆盖不了组件内部；
+ *   2) 以后要换主色 / 加深色模式，只改这一个文件即可，业务代码零改动。
+ *
+ * ⚠️ 引入顺序：必须在 element-plus/dist/index.css **之后**引入（见 src/main.js），
+ *    同名 CSS 变量后者胜，顺序反了就会被 EP 的默认值盖回去。
+ *
+ * ⚠️ 本文件是**纯 CSS**（刻意没用任何 SCSS 语法，连 // 注释都没用）：
+ *    因此 Vite 可以原生处理，不需要 sass / sass-embedded 等预处理器依赖。
+ * ========================================================================== */
+
+:root {
+  /* ---------------- 一、品牌主色（阿里云蓝） ---------------- */
+  --app-primary: #1677ff;
+  --app-primary-light: #e6f0ff; /* 浅色底：选中行、提示块、标签底色 */
+  --app-primary-dark: #0958d9; /* 深色：主按钮 hover / 链接按下 */
+  /* 主色 5 档浅色（含义同 EP 的 light-3/5/7/8/9：数字越大越接近白，按「主色 + N*10% 白」混出） */
+  --app-primary-light-3: #5ca0ff;
+  --app-primary-light-5: #8bbbff;
+  --app-primary-light-7: #b9d6ff;
+  --app-primary-light-8: #d0e4ff;
+  --app-primary-light-9: #e8f1ff;
+
+  /* ---------------- 二、功能色 ---------------- */
+  --app-success: #52c41a;
+  --app-warning: #faad14;
+  --app-danger: #ff4d4f;
+  --app-info: #909399;
+
+  /* 功能色也要给出浅色档：EP 的 plain 按钮、light 标签、alert 底色全靠这几档，
+     只覆盖基色会出现「底是旧版 EP 色、边是新色」的错配 */
+  --app-success-light-3: #86d65f;
+  --app-success-light-5: #a9e28d;
+  --app-success-light-7: #cbedba;
+  --app-success-light-8: #dcf3d1;
+  --app-success-light-9: #eef9e8;
+  --app-success-dark-2: #429d15;
+
+  --app-warning-light-3: #fcc65b;
+  --app-warning-light-5: #fdd68a;
+  --app-warning-light-7: #fee6b9;
+  --app-warning-light-8: #feefd0;
+  --app-warning-light-9: #fff7e8;
+  --app-warning-dark-2: #c88a10;
+
+  --app-danger-light-3: #ff8284;
+  --app-danger-light-5: #ffa6a7;
+  --app-danger-light-7: #ffcaca;
+  --app-danger-light-8: #ffdbdc;
+  --app-danger-light-9: #ffeded;
+  --app-danger-dark-2: #cc3e3f;
+
+  --app-info-light-3: #b1b3b8;
+  --app-info-light-5: #c8c9cc;
+  --app-info-light-7: #dedfe0;
+  --app-info-light-8: #e9e9eb;
+  --app-info-light-9: #f4f4f5;
+  --app-info-dark-2: #73767a;
+
+  /* ---------------- 三、中性色 ---------------- */
+  --app-bg-page: #f0f2f5; /* 页面底色（内容区） */
+  --app-bg-card: #ffffff; /* 卡片 / 弹窗底色 */
+  --app-bg-sidebar: #001529; /* 侧边栏与顶栏底色（深色） */
+  --app-text-primary: #1f2d3d; /* 标题、表格正文 */
+  --app-text-secondary: #606266; /* 次要说明、表单 label */
+  --app-text-sidebar: #bfcbd9; /* 深色栏上的普通文字 */
+  --app-text-sidebar-active: #ffffff; /* 深色栏上的选中 / hover 文字 */
+  --app-border: #e4e7ed; /* 卡片、分割线 */
+  --app-border-light: #ebeef5; /* 更浅的分割线（表头下沿、卡片头下沿） */
+
+  /* ---------------- 四、尺寸 ---------------- */
+  --app-radius: 4px;
+  --app-radius-small: 2px;
+  --app-space-xs: 4px;
+  --app-space-sm: 8px;
+  --app-space-md: 16px;
+  --app-space-lg: 24px;
+
+  /* ---------------- 五、Element Plus 主题变量映射 ----------------
+   * 只覆盖「影响整体观感」的那一批；其余变量（动画、阴影、字号档位）保持 EP 默认。
+   * 组件里现有的 var(--el-text-color-primary) / var(--el-border-color-light) 等引用
+   * 会自动跟着这里的值走，所以老代码不用改。 */
+
+  /* 主色 */
+  --el-color-primary: var(--app-primary);
+  --el-color-primary-light-3: var(--app-primary-light-3);
+  --el-color-primary-light-5: var(--app-primary-light-5);
+  --el-color-primary-light-7: var(--app-primary-light-7);
+  --el-color-primary-light-8: var(--app-primary-light-8);
+  --el-color-primary-light-9: var(--app-primary-light-9);
+  --el-color-primary-dark-2: var(--app-primary-dark);
+
+  /* 功能色（error 是 EP 内部对 danger 的别名，必须一起给，否则表单校验文字还是旧红） */
+  --el-color-success: var(--app-success);
+  --el-color-success-light-3: var(--app-success-light-3);
+  --el-color-success-light-5: var(--app-success-light-5);
+  --el-color-success-light-7: var(--app-success-light-7);
+  --el-color-success-light-8: var(--app-success-light-8);
+  --el-color-success-light-9: var(--app-success-light-9);
+  --el-color-success-dark-2: var(--app-success-dark-2);
+
+  --el-color-warning: var(--app-warning);
+  --el-color-warning-light-3: var(--app-warning-light-3);
+  --el-color-warning-light-5: var(--app-warning-light-5);
+  --el-color-warning-light-7: var(--app-warning-light-7);
+  --el-color-warning-light-8: var(--app-warning-light-8);
+  --el-color-warning-light-9: var(--app-warning-light-9);
+  --el-color-warning-dark-2: var(--app-warning-dark-2);
+
+  --el-color-danger: var(--app-danger);
+  --el-color-danger-light-3: var(--app-danger-light-3);
+  --el-color-danger-light-5: var(--app-danger-light-5);
+  --el-color-danger-light-7: var(--app-danger-light-7);
+  --el-color-danger-light-8: var(--app-danger-light-8);
+  --el-color-danger-light-9: var(--app-danger-light-9);
+  --el-color-danger-dark-2: var(--app-danger-dark-2);
+
+  --el-color-error: var(--app-danger);
+  --el-color-error-light-3: var(--app-danger-light-3);
+  --el-color-error-light-5: var(--app-danger-light-5);
+  --el-color-error-light-7: var(--app-danger-light-7);
+  --el-color-error-light-8: var(--app-danger-light-8);
+  --el-color-error-light-9: var(--app-danger-light-9);
+  --el-color-error-dark-2: var(--app-danger-dark-2);
+
+  --el-color-info: var(--app-info);
+  --el-color-info-light-3: var(--app-info-light-3);
+  --el-color-info-light-5: var(--app-info-light-5);
+  --el-color-info-light-7: var(--app-info-light-7);
+  --el-color-info-light-8: var(--app-info-light-8);
+  --el-color-info-light-9: var(--app-info-light-9);
+  --el-color-info-dark-2: var(--app-info-dark-2);
+
+  /* 文字 / 边框 / 底色：让 EP 组件与页面 token 共用一套灰，避免「两种灰」 */
+  --el-text-color-primary: var(--app-text-primary);
+  --el-text-color-regular: var(--app-text-secondary);
+  --el-border-color: var(--app-border);
+  --el-border-color-light: var(--app-border-light);
+  --el-border-color-lighter: var(--app-border-light);
+  --el-bg-color-page: var(--app-bg-page);
+  --el-fill-color-blank: var(--app-bg-card);
+
+  /* 圆角与基准字号 */
+  --el-border-radius-base: var(--app-radius);
+  --el-border-radius-small: var(--app-radius-small);
+  --el-font-size-base: 14px;
+
+  /* 卡片：体内边距与卡片头的 16px 对齐（EP 默认 20px，会让标题与内容左边缘差 4px） */
+  --el-card-border-color: var(--app-border);
+  --el-card-border-radius: var(--app-radius);
+  --el-card-padding: var(--app-space-md);
+
+  /* 表格：浅灰表头 + 淡蓝 hover（global.css 里还有同名规则兜底） */
+  --el-table-header-bg-color: #fafafa;
+  --el-table-header-text-color: var(--app-text-primary);
+  --el-table-row-hover-bg-color: #f5f9ff;
+  --el-table-border-color: var(--app-border-light);
+}

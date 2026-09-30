@@ -2,7 +2,8 @@
 //
 // 结构：/login 独立成页；其余业务页面都挂在 AppLayout 之下（布局里放 <router-view />）。
 // 业务页一律**懒加载**（() => import()）：首屏只加载登录页与布局，模块多了也不会拖慢启动。
-// 所有已实现模块都在这里注册；未实现的模块先指向 PlaceholderView（当前没有这样的模块）。
+// 所有模块（38 个 NAS 路径对应的页面）都已实现并在这里注册。
+// 将来若新增未实现的模块：先在 src/constants/menus.js 加菜单项，再在这里挂一个占位页。
 
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
@@ -55,13 +56,30 @@ const routes = [
         component: () => import('@/views/tasks/TaskListView.vue'),
         meta: { title: '任务管理' }
       },
-      // 以下模块接口已就绪，页面待实现：把 component 换成真实页面即可
-      // （定时任务已接入，PlaceholderView 目前没有路由引用，保留着作为后续未实现模块的占位页模板）
+      // 以下四个模块同样已实现（至此 38 个 NAS 路径 38/38，没有占位路由）
       {
         path: 'timing',
         name: 'timing',
         component: () => import('@/views/timing/TimingListView.vue'),
         meta: { title: '定时任务' }
+      },
+      {
+        path: 'priority',
+        name: 'priority',
+        component: () => import('@/views/priority/PriorityListView.vue'),
+        meta: { title: '任务优先级' }
+      },
+      {
+        path: 'device-permits',
+        name: 'device-permits',
+        component: () => import('@/views/devicePermits/DevicePermitListView.vue'),
+        meta: { title: '设备权限' }
+      },
+      {
+        path: 'device-tasks',
+        name: 'device-tasks',
+        component: () => import('@/views/deviceTasks/DeviceTaskListView.vue'),
+        meta: { title: '设备任务' }
       }
     ]
   },

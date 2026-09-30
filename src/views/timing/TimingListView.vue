@@ -382,7 +382,7 @@ async function handleSetConfirm(payload) {
 </script>
 
 <template>
-  <div class="timing">
+  <div class="timing app-page">
     <!-- 一、定时程序（全局只有一份：程序名 / 组合 / 当前执行程序 / 静默时段 / 自动切换） -->
     <el-card class="timing__card" shadow="never">
       <template #header>
@@ -649,7 +649,7 @@ async function handleSetConfirm(payload) {
 }
 
 .timing__card {
-  border-radius: 6px;
+  border-radius: var(--app-radius);
 }
 
 .timing__header {

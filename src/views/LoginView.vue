@@ -62,7 +62,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="login-page">
+  <div class="login-page app-page">
     <el-card class="login-card" shadow="always">
       <template #header>
         <div class="login-card__header">

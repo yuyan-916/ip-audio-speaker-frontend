@@ -198,7 +198,7 @@ async function copyText(text) {
 </script>
 
 <template>
-  <div class="playlists">
+  <div class="playlists app-page">
     <el-card class="playlists__card" shadow="never">
       <template #header>
         <div class="playlists__header">

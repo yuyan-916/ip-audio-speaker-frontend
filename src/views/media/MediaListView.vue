@@ -221,7 +221,7 @@ async function handleDeleteConfirm() {
 </script>
 
 <template>
-  <div class="media">
+  <div class="media app-page">
     <el-card class="media__card" shadow="never">
       <template #header>
         <div class="media__header">
@@ -384,7 +384,7 @@ async function handleDeleteConfirm() {
 
 <style scoped>
 .media__card {
-  border-radius: 8px;
+  border-radius: var(--app-radius);
 }
 
 .media__header {

@@ -785,7 +785,7 @@ async function copyText(text) {
   min-width: 0;
   padding: 8px;
   border: 1px solid var(--el-border-color-lighter);
-  border-radius: 4px;
+  border-radius: var(--app-radius);
 }
 
 .task-form__col-foot {

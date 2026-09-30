@@ -427,7 +427,7 @@ function handleConfirm() {
   padding: 10px 12px;
   margin-bottom: 12px;
   border: 1px solid var(--el-border-color-lighter);
-  border-radius: 4px;
+  border-radius: var(--app-radius);
 }
 
 .timing-config__hint {

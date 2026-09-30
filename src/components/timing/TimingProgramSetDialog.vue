@@ -219,7 +219,7 @@ async function handleConfirm() {
 .timing-set__segment {
   padding: 10px 12px;
   border: 1px solid var(--el-border-color-lighter);
-  border-radius: 4px;
+  border-radius: var(--app-radius);
 }
 
 .timing-set__row {

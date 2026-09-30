@@ -319,8 +319,8 @@ Vite 直接处理，**不需要引入任何预处理器依赖**（`sass` / `sass
 - EP 的 `error` 是 `danger` 的别名，两边都要给，否则表单校验文字还是旧红。
 - EP 的 `--el-border-radius-base`、`--el-text-color-primary`、`--el-border-color-light`、`--el-card-*`、
   `--el-table-*` 也一起映射到了 token，所以组件里**原有的 `var(--el-xxx)` 写法不用改**，会跟着新主题走。
-- 页面 / 组件里一律用 `var(--app-xxx)`，不要再写死十六进制色值（本次已把 `media__card` 的 8px、
-  `timing__card` 的 6px 圆角统一成 `var(--app-radius)`）。
+- 页面 / 组件里一律用 `var(--app-xxx)`，**不要写死十六进制色值，也不要写死圆角 px**。本次已把 `media__card` 的 8px、
+  `timing__card` 的 6px、5 个弹窗里 `.playlist-form__panel` / `.task-form__col` / `.timing-config__segment` / `.timing-set__segment` / `.timing-form__col` 的 4px、以及 `media__subuser` 的 6px 全部统一成 `var(--app-radius)`。
 
 ### 9.3 版式（`src/layouts/AppLayout.vue`）
 

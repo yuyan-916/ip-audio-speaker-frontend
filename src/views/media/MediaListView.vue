@@ -441,7 +441,7 @@ async function handleDeleteConfirm() {
   gap: 8px;
   margin-bottom: 12px;
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: var(--app-radius);
   background: var(--el-fill-color-light);
 }
 
